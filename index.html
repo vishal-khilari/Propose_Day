@@ -438,7 +438,7 @@
 
       .final-message {
         position: absolute;
-        bottom: -160px;
+        bottom: -200px;
         left: 50%;
         transform: translateX(-50%);
         color: #d63384;
@@ -451,6 +451,11 @@
         line-height: 1.8;
         transition: opacity 1s ease;
         pointer-events: none;
+        cursor: pointer;
+      }
+
+      .final-message.show {
+        pointer-events: auto;
       }
 
       .final-message.show {
@@ -586,7 +591,11 @@
           <div class="main-question">May I choose you?</div>
           <div class="sub-instruction">click if Yes</div>
         </div>
-        <div class="final-message" id="finalMessage">
+        <div
+          class="final-message"
+          id="finalMessage"
+          onclick="redirectToNextPage(event)"
+        >
           You make my life better in every way. Will you stay by my side?
         </div>
       </div>
@@ -742,6 +751,16 @@
           setTimeout(() => {
             sparkle.remove();
           }, 2000);
+        }
+      }
+
+      // Redirect to next page when final message is clicked
+      function redirectToNextPage(event) {
+        event.stopPropagation(); // Prevent pokeball toggle
+        const finalMessage = document.getElementById("finalMessage");
+
+        if (finalMessage.classList.contains("show")) {
+          window.location.href = "https://formyloveprishu.vercel.app/";
         }
       }
 
