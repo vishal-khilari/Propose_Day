@@ -441,6 +441,27 @@
         transition: opacity 0.3s ease;
       }
 
+      .final-message {
+        position: absolute;
+        bottom: -120px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #d63384;
+        font-size: 20px;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(214, 51, 132, 0.3);
+        opacity: 0;
+        text-align: center;
+        max-width: 400px;
+        line-height: 1.6;
+        transition: opacity 1s ease;
+        pointer-events: none;
+      }
+
+      .final-message.show {
+        opacity: 1;
+      }
+
       .ring {
         position: fixed;
         top: 50%;
@@ -564,6 +585,9 @@
           <div class="main-question">May I choose you?</div>
           <div class="sub-instruction">click if Yes</div>
         </div>
+        <div class="final-message" id="finalMessage">
+          You make my life better in every way.<br />Will you stay by my side?
+        </div>
       </div>
       <img src="img/ring.png" alt="Diamond Ring" class="ring" id="ring" />
     </div>
@@ -653,6 +677,7 @@
       function togglePokeball() {
         const pokeball = document.getElementById("pokeball");
         const ring = document.getElementById("ring");
+        const finalMessage = document.getElementById("finalMessage");
         const isOpen = pokeball.classList.contains("open");
 
         if (!isOpen) {
@@ -670,6 +695,11 @@
               // Fade out pokeball after ring appears
               setTimeout(() => {
                 pokeball.classList.add("fade-out");
+
+                // Show final message after pokeball fades out
+                setTimeout(() => {
+                  finalMessage.classList.add("show");
+                }, 1000);
               }, 1500);
             }, 1200);
           }, 50);
@@ -678,6 +708,7 @@
           pokeball.classList.remove("open");
           pokeball.classList.remove("fade-out");
           ring.classList.remove("show");
+          finalMessage.classList.remove("show");
         }
       }
 
