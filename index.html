@@ -160,6 +160,7 @@
         display: none;
         justify-content: center;
         align-items: center;
+        padding-bottom: 80px;
         z-index: 30;
         opacity: 0;
         transition: opacity 1s ease;
@@ -433,6 +434,11 @@
 
       .pokeball.open .click-text {
         display: none;
+      }
+
+      .pokeball.opening .click-text {
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
       .ring {
