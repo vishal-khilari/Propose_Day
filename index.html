@@ -171,6 +171,10 @@
         opacity: 1;
       }
 
+      .pokeball-container.clickable {
+        cursor: pointer;
+      }
+
       .container {
         position: relative;
         cursor: pointer;
@@ -438,7 +442,7 @@
 
       .final-message {
         position: absolute;
-        bottom: -180px;
+        bottom: -120px;
         left: 50%;
         transform: translateX(-50%);
         color: #d63384;
@@ -482,6 +486,8 @@
       .ring.show {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
+        cursor: pointer;
       }
 
       .pokeball.fade-out {
@@ -542,7 +548,7 @@
         }
 
         .final-message {
-          bottom: -220px;
+          bottom: -160px;
           font-size: 18px;
           max-width: 90%;
         }
@@ -600,7 +606,13 @@
           You make my life better in every way. Will you stay by my side?
         </div>
       </div>
-      <img src="img/ring.png" alt="Diamond Ring" class="ring" id="ring" />
+      <img
+        src="img/ring.png"
+        alt="Diamond Ring"
+        class="ring"
+        id="ring"
+        onclick="redirectToNextPage()"
+      />
     </div>
 
     <script>
@@ -690,6 +702,7 @@
         const ring = document.getElementById("ring");
         const finalMessage = document.getElementById("finalMessage");
         const clickText = document.getElementById("clickText");
+        const pokeballContainer = document.getElementById("pokeballContainer");
         const isOpen = pokeball.classList.contains("open");
 
         if (!isOpen) {
@@ -714,6 +727,10 @@
                 // Show final message after pokeball fades out
                 setTimeout(() => {
                   finalMessage.classList.add("show");
+
+                  // Make the entire pokeball container clickable after final message shows
+                  pokeballContainer.classList.add("clickable");
+                  pokeballContainer.onclick = redirectToNextPage;
                 }, 1000);
               }, 1500);
             }, 1200);
@@ -725,6 +742,8 @@
           ring.classList.remove("show");
           finalMessage.classList.remove("show");
           clickText.classList.remove("hide");
+          pokeballContainer.classList.remove("clickable");
+          pokeballContainer.onclick = null;
         }
       }
 
