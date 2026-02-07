@@ -438,7 +438,7 @@
 
       .final-message {
         position: absolute;
-        bottom: -180px;
+        bottom: -260px;
         left: 50%;
         transform: translateX(-50%);
         color: #d63384;
@@ -447,8 +447,8 @@
         text-shadow: 2px 2px 4px rgba(214, 51, 132, 0.3);
         opacity: 0;
         text-align: center;
-        max-width: 500px;
-        line-height: 1.6;
+        max-width: 600px;
+        line-height: 1.8;
         transition: opacity 1s ease;
         pointer-events: none;
       }
@@ -533,6 +533,12 @@
 
         .ring {
           width: 100px;
+        }
+
+        .final-message {
+          bottom: -220px;
+          font-size: 18px;
+          max-width: 90%;
         }
       }
     </style>
@@ -677,7 +683,7 @@
         const isOpen = pokeball.classList.contains("open");
 
         if (!isOpen) {
-          // Hide click text immediately
+          // Hide click text immediately when clicked
           clickText.classList.add("hide");
 
           // Opening
