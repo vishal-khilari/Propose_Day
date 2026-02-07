@@ -438,7 +438,7 @@
 
       .final-message {
         position: absolute;
-        bottom: -200px;
+        bottom: -180px;
         left: 50%;
         transform: translateX(-50%);
         color: #d63384;
@@ -452,6 +452,7 @@
         transition: opacity 1s ease;
         pointer-events: none;
         cursor: pointer;
+        z-index: 10000;
       }
 
       .final-message.show {
@@ -575,9 +576,9 @@
 
     <!-- Pokéball container -->
     <div class="pokeball-container" id="pokeballContainer">
-      <div class="container" onclick="togglePokeball()">
+      <div class="container">
         <div class="glow"></div>
-        <div class="pokeball" id="pokeball">
+        <div class="pokeball" id="pokeball" onclick="togglePokeball()">
           <div class="half top-half"></div>
           <div class="half bottom-half"></div>
           <div class="center-line"></div>
@@ -594,7 +595,7 @@
         <div
           class="final-message"
           id="finalMessage"
-          onclick="redirectToNextPage(event)"
+          onclick="redirectToNextPage()"
         >
           You make my life better in every way. Will you stay by my side?
         </div>
@@ -755,13 +756,8 @@
       }
 
       // Redirect to next page when final message is clicked
-      function redirectToNextPage(event) {
-        event.stopPropagation(); // Prevent pokeball toggle
-        const finalMessage = document.getElementById("finalMessage");
-
-        if (finalMessage.classList.contains("show")) {
-          window.location.href = "https://formyloveprishu.vercel.app/";
-        }
+      function redirectToNextPage() {
+        window.location.href = "https://formyloveprishu.vercel.app/";
       }
 
       // Initialize
