@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Propose Day 💍</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(
+          135deg,
+          #ffeef8 0%,
+          #ffe0f0 50%,
+          #ffd4e8 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* Floating hearts background */
+      .hearts {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      .heart {
+        position: absolute;
+        font-size: 1.5rem;
+        animation: floatUp 15s infinite ease-in;
+        opacity: 0;
+      }
+
+      @keyframes floatUp {
+        0% {
+          bottom: -10%;
+          opacity: 0;
+        }
+        10% {
+          opacity: 0.3;
+        }
+        90% {
+          opacity: 0.3;
+        }
+        100% {
+          bottom: 110%;
+          opacity: 0;
+        }
+      }
+
+      /* Initial screen with clickable text */
+      .initial-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 10;
+        transition: opacity 0.8s ease;
+      }
+
+      .initial-screen.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .message-container {
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .message-container:hover {
+        transform: scale(1.05);
+      }
+
+      .main-text {
+        font-size: 3rem;
+        color: #d63384;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(214, 51, 132, 0.2);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      .sub-text {
+        font-size: 1.2rem;
+        color: #8b3a62;
+        font-style: italic;
+        opacity: 0.8;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      /* Video container */
+      .video-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 20;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+      }
+
+      .video-container.show {
+        display: flex;
+        opacity: 1;
+      }
+
+      .video-container.fade-out {
+        opacity: 0;
+      }
+
+      video {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      /* Pokéball container */
+      .pokeball-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 30;
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+
+      .pokeball-container.show {
+        display: flex;
+        opacity: 1;
+      }
+
+      .container {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .pokeball {
+        width: 300px;
+        height: 300px;
+        position: relative;
+        transition: transform 0.5s ease;
+        transform-style: preserve-3d;
+      }
+
+      .pokeball:hover {
+        transform: scale(1.05);
+      }
+
+      .pokeball.opening:hover {
+        transform: none;
+      }
+
+      .half {
+        width: 300px;
+        height: 150px;
+        position: absolute;
+        border-radius: 150px 150px 0 0;
+        transition: all 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+
+      .top-half {
+        background: linear-gradient(135deg, #ff1744 0%, #d50000 100%);
+        top: 0;
+        border-bottom: 8px solid #1a1a1a;
+        box-shadow:
+          inset 0 -10px 20px rgba(0, 0, 0, 0.3),
+          0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 2;
+      }
+
+      .top-half::before {
+        content: "";
+        position: absolute;
+        top: 20px;
+        left: 40px;
+        width: 80px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        filter: blur(10px);
+      }
+
+      .top-half::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 100%;
+        height: 8px;
+        background: #1a1a1a;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+
+      .bottom-half {
+        background: linear-gradient(135deg, #fafafa 0%, #e0e0e0 100%);
+        bottom: 0;
+        border-radius: 0 0 150px 150px;
+        border-top: 8px solid #1a1a1a;
+        box-shadow:
+          inset 0 10px 20px rgba(0, 0, 0, 0.1),
+          0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 1;
+      }
+
+      .pokeball.open .top-half {
+        transform: translateY(-100px) rotateX(-25deg);
+      }
+
+      .pokeball.open .bottom-half {
+        transform: translateY(100px) rotateX(25deg);
+      }
+
+      .pokeball.open .center-line {
+        transform: translate(0, -100px);
+      }
+
+      .pokeball.open .button-container {
+        transform: translate(-50%, -150px);
+      }
+
+      .center-line {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 16px;
+        background: #1a1a1a;
+        transform: translateY(-50%);
+        z-index: 3;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        transition: all 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        pointer-events: none;
+      }
+
+      .button-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 4;
+        width: 90px;
+        height: 90px;
+        transition: all 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+
+      .outer-button {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #424242 0%, #1a1a1a 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow:
+          0 0 0 6px #1a1a1a,
+          0 0 20px rgba(0, 0, 0, 0.5),
+          inset 0 3px 10px rgba(255, 255, 255, 0.2);
+        transition: all 0.5s ease;
+      }
+
+      .pokeball:hover .outer-button {
+        box-shadow:
+          0 0 0 6px #1a1a1a,
+          0 0 30px rgba(255, 255, 255, 0.5),
+          inset 0 3px 10px rgba(255, 255, 255, 0.3);
+      }
+
+      .inner-button {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle at 30% 30%,
+          #ffffff 0%,
+          #e0e0e0 100%
+        );
+        border: 3px solid #424242;
+        box-shadow:
+          inset 0 -3px 8px rgba(0, 0, 0, 0.3),
+          0 3px 10px rgba(255, 255, 255, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .inner-button::before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        width: 15px;
+        height: 15px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        filter: blur(3px);
+      }
+
+      .sparkle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: sparkle-animation 2s ease-out forwards;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      }
+
+      @keyframes sparkle-animation {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--x), var(--y)) scale(0);
+          opacity: 0;
+        }
+      }
+
+      .glow {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 100, 0) 0%,
+          rgba(255, 255, 100, 0) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.8s ease;
+        pointer-events: none;
+      }
+
+      .pokeball.open .glow {
+        opacity: 1;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 100, 0.4) 0%,
+          rgba(255, 255, 100, 0) 70%
+        );
+        animation: glow-pulse 1s ease-out;
+      }
+
+      @keyframes glow-pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.3);
+        }
+      }
+
+      .click-text {
+        position: absolute;
+        bottom: -80px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #d63384;
+        font-size: 18px;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(214, 51, 132, 0.3);
+        opacity: 0.8;
+        animation: float 3s ease-in-out infinite;
+        text-align: center;
+      }
+
+      .click-text .main-question {
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+
+      .click-text .sub-instruction {
+        font-size: 14px;
+        font-style: italic;
+        opacity: 0.7;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0px);
+        }
+        50% {
+          transform: translateX(-50%) translateY(-10px);
+        }
+      }
+
+      .pokeball.open .click-text {
+        display: none;
+      }
+
+      .ring {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.5);
+        width: 120px;
+        height: auto;
+        opacity: 0;
+        z-index: 9999;
+        pointer-events: none;
+        transition: all 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8))
+          drop-shadow(0 0 40px rgba(255, 215, 0, 0.6))
+          drop-shadow(0 0 60px rgba(255, 215, 0, 0.4));
+      }
+
+      .ring.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .pokeball.fade-out {
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+
+      .pokeball.fade-out .click-text {
+        opacity: 0;
+      }
+
+      @media (max-width: 768px) {
+        .main-text {
+          font-size: 2rem;
+        }
+
+        .sub-text {
+          font-size: 1rem;
+        }
+
+        .pokeball {
+          width: 250px;
+          height: 250px;
+        }
+
+        .half {
+          width: 250px;
+          height: 125px;
+          border-radius: 125px 125px 0 0;
+        }
+
+        .top-half {
+          border-bottom: 6px solid #1a1a1a;
+        }
+
+        .bottom-half {
+          border-radius: 0 0 125px 125px;
+          border-top: 6px solid #1a1a1a;
+        }
+
+        .button-container {
+          width: 75px;
+          height: 75px;
+        }
+
+        .outer-button {
+          width: 75px;
+          height: 75px;
+        }
+
+        .inner-button {
+          width: 42px;
+          height: 42px;
+        }
+
+        .ring {
+          width: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Floating hearts background -->
+    <div class="hearts" id="hearts"></div>
+
+    <!-- Initial screen -->
+    <div class="initial-screen" id="initialScreen">
+      <div class="message-container" onclick="startExperience()">
+        <div class="main-text">Something for you 💕</div>
+        <div class="sub-text">click</div>
+      </div>
+    </div>
+
+    <!-- Video container -->
+    <div class="video-container" id="videoContainer">
+      <video id="proposeVideo" playsinline>
+        <source src="img/May i choose.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- Audio for after video -->
+    <audio id="backgroundAudio" preload="auto">
+      <source src="img/perfect.mp3" type="audio/mpeg" />
+    </audio>
+
+    <!-- Pokéball container -->
+    <div class="pokeball-container" id="pokeballContainer">
+      <div class="container" onclick="togglePokeball()">
+        <div class="glow"></div>
+        <div class="pokeball" id="pokeball">
+          <div class="half top-half"></div>
+          <div class="half bottom-half"></div>
+          <div class="center-line"></div>
+          <div class="button-container">
+            <div class="outer-button">
+              <div class="inner-button"></div>
+            </div>
+          </div>
+        </div>
+        <div class="click-text">
+          <div class="main-question">May I choose you?</div>
+          <div class="sub-instruction">click if Yes</div>
+        </div>
+      </div>
+      <img src="img/ring.png" alt="Diamond Ring" class="ring" id="ring" />
+    </div>
+
+    <script>
+      // Create floating hearts
+      function createFloatingHearts() {
+        const heartsContainer = document.getElementById("hearts");
+        const heartSymbols = ["💕", "💖", "💗", "💓", "💝", "💍", "🌹"];
+
+        setInterval(() => {
+          const heart = document.createElement("div");
+          heart.className = "heart";
+          heart.textContent =
+            heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+          heart.style.left = Math.random() * 100 + "%";
+          heart.style.animationDuration = Math.random() * 10 + 10 + "s";
+          heart.style.fontSize = Math.random() * 1 + 1 + "rem";
+          heartsContainer.appendChild(heart);
+
+          setTimeout(() => {
+            heart.remove();
+          }, 15000);
+        }, 3000);
+      }
+
+      // Start the experience
+      function startExperience() {
+        const initialScreen = document.getElementById("initialScreen");
+        const videoContainer = document.getElementById("videoContainer");
+        const video = document.getElementById("proposeVideo");
+
+        // Set video volume to 75%
+        video.volume = 0.75;
+
+        // Hide initial screen
+        initialScreen.classList.add("hidden");
+
+        // Show video container after fade out
+        setTimeout(() => {
+          videoContainer.classList.add("show");
+          video.play().catch((error) => {
+            console.log("Video autoplay failed:", error);
+            // If autoplay fails, show pokeball directly
+            showPokeball();
+          });
+        }, 800);
+
+        // Monitor video time
+        video.addEventListener("timeupdate", function () {
+          if (video.currentTime >= 27) {
+            showPokeball();
+          }
+        });
+
+        // Fallback: if video ends before 27 seconds
+        video.addEventListener("ended", function () {
+          showPokeball();
+        });
+      }
+
+      // Show pokéball
+      function showPokeball() {
+        const videoContainer = document.getElementById("videoContainer");
+        const pokeballContainer = document.getElementById("pokeballContainer");
+        const video = document.getElementById("proposeVideo");
+        const audio = document.getElementById("backgroundAudio");
+
+        // Pause and hide video
+        video.pause();
+        videoContainer.classList.add("fade-out");
+
+        // Start playing audio from 3:26 (206 seconds) at 88% volume
+        audio.currentTime = 206;
+        audio.volume = 0.88;
+        audio.play().catch((error) => {
+          console.log("Audio autoplay failed:", error);
+        });
+
+        setTimeout(() => {
+          videoContainer.style.display = "none";
+          pokeballContainer.classList.add("show");
+        }, 1000);
+      }
+
+      // Toggle pokéball
+      function togglePokeball() {
+        const pokeball = document.getElementById("pokeball");
+        const ring = document.getElementById("ring");
+        const isOpen = pokeball.classList.contains("open");
+
+        if (!isOpen) {
+          // Opening
+          pokeball.classList.add("opening");
+          setTimeout(() => {
+            pokeball.classList.add("open");
+            pokeball.classList.remove("opening");
+            createSparkles();
+
+            // Show ring after 1200ms with scale animation
+            setTimeout(() => {
+              ring.classList.add("show");
+
+              // Fade out pokeball after ring appears
+              setTimeout(() => {
+                pokeball.classList.add("fade-out");
+              }, 1500);
+            }, 1200);
+          }, 50);
+        } else {
+          // Closing
+          pokeball.classList.remove("open");
+          pokeball.classList.remove("fade-out");
+          ring.classList.remove("show");
+        }
+      }
+
+      // Create sparkles
+      function createSparkles() {
+        const container = document.querySelector(".container");
+        const sparkleCount = 20;
+
+        for (let i = 0; i < sparkleCount; i++) {
+          const sparkle = document.createElement("div");
+          sparkle.className = "sparkle";
+
+          const angle = (Math.PI * 2 * i) / sparkleCount;
+          const distance = 100 + Math.random() * 50;
+          const x = Math.cos(angle) * distance;
+          const y = Math.sin(angle) * distance;
+
+          sparkle.style.setProperty("--x", `${x}px`);
+          sparkle.style.setProperty("--y", `${y}px`);
+          sparkle.style.left = "50%";
+          sparkle.style.top = "50%";
+
+          container.appendChild(sparkle);
+
+          setTimeout(() => {
+            sparkle.remove();
+          }, 2000);
+        }
+      }
+
+      // Initialize
+      createFloatingHearts();
+    </script>
+  </body>
+</html>
